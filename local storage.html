@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>Advanced JavaScript for Web Sites and Web Applications</title>
+
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="../assets/css/reveal.min.css">
+
+    <!--link rel="stylesheet" href="../assets/css/theme/beige.css" id="theme"-->
+    <!--link rel="stylesheet" href="../assets/css/theme/moon.css" id="theme"-->
+    <link rel="stylesheet" href="../assets/css/theme/beige.css" id="theme">
+
+
+    <link rel="stylesheet" href="../assets/css/custom.css">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="../assets/lib/css/zenburn.css">
+
+    <link href="../assets/font-awesome.min.css" rel="stylesheet" />
+
+    <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+    <script>
+      document.write( '<link rel="stylesheet" href="../assets/css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+<section>
+  <h1>Advanced JavaScript for Web Sites and Web Applications</h1><br /><br />
+  <br />
+  <h2>Session 7 - Local Storage</h2>
+  <br />
+  <ul class="table-index">
+    <li>1. Local Storage</li>
+    <li>2. The app</li>
+ </ul>
+</section>
+
+
+<section>
+  <h2>1. Local Storage</h2>
+  <p><code>LocalStorage</code> is part of the DOM storage API, along with <code>sessionStorage</code>. Both allow you to store data in a browser cache area.</p>
+  <p><code>LocalStorage</code> is persistant (is kept when the browser is closed), the <code>sessionStorage</code> is emptied when the browser session is closed.</p>
+</section>
+<section>
+  <p><code>sessionStorage</code> and <code>LocalStorage</code> are both restricted by the same domain policy. You cannot read or set the storage content from different domain.</p>
+</section>
+
+<section>
+<p>We'll use <code>LocalStorage</code> in this session, as it is stored for longer in the cache.</p>
+
+<p>This is how you access the object:</p>
+<pre class="javascript"><code>window.localStorage</code></pre>
+
+<p>This is an object that has a length (the number of items you've stored in the cache) and holds the items in a key/value format.</p>
+
+</section>
+
+
+<section>
+<p>You can add an item to the storage cache by doing:</p>
+<pre class="javascript"><code>window.localStorage.setItem(key, value)</code></pre>
+
+<p>And you can remove an item from the storage cache by doing:</p>
+<pre class="javascript"><code>window.localStorage.remove(key)</code></pre>
+
+</section>
+
+
+<section>
+  <p>For example, to add an item called "gilles", that holds the value 33, you can do:</p>
+<pre class="javascript"><code>window.localStorage.setItem("gilles", 33);</code></pre>
+</section>
+
+<section>
+  <p>To remove it:</p>
+<pre class="javascript"><code>window.localStorage.removeItem("gilles");</code></pre>
+</section>
+
+<section>
+  <p>You can also replace or override an item by using <code>setItem</code> with an exisiting name:</p>
+<pre class="javascript"><code>window.localStorage.setItem("gilles", 33);
+
+window.localStorage.setItem("gilles", 50);</code></pre>
+</section>
+
+
+<section>
+  <p>You can also trigger the browser to manually clear the entire cache (for a domain):</p>
+<pre class="javascript"><code>window.localStorage.clear()</code></pre></section>
+
+<section>
+  <h2>2. The app</h2>
+</section>
+
+<section>
+  <p>We are building a form, with the option to resume the submission at a later time.</p>
+  <p>We'll store the data the user enters in the form as they type, and restore it later if they have not finished the form and have closed their browser, or the network died etc.</p>
+  <p><a href="example/example.html">See it here</a></p>
+</section>
+
+
+
+<section>
+  <h3>The application needs to:</h3>
+
+  <p class="fragment">1. Store the user's input in local storage</p>
+  <p class="fragment">2. Make sure the "clear storage" button works, and clears the entire storage</p>
+  <p class="fragment">3. Populate the data from the local storage</p>
+  </section>
+  <section>
+
+      <p>1. Store the user's input in local storage:</p>
+  <ul>
+    <li class="fragment">detect each key up action on each input field</li>
+    <li class="fragment">store the data for that field in a local storage key / value item</li>
+    <li class="fragment">use event delegation and remember that we need to check the html nodeName</li>
+  </ul>
+
+  <p class="fragment">Your local storage items should have multiple items, one per input, with the input name and the value of that input.</p>
+
+</section>
+<section>
+  <p>2. Make sure the "clear storage" button works, and clears the entire storage:</p>
+  <p class="fragment">When someone clicks on the button, declare an event handler to clear the local storage.</p>
+</section>
+
+<section>
+  <p>3. Populate the data from the local storage:</p>
+
+  <ul>
+    <li class="fragment">when the populate button is clicked</li>
+    <li class="fragment">read the local storage data, go through each key/value item</li>
+    <li class="fragment">if an item is not empty, add it to the input value</li>
+  </ul>
+</section>
+
+
+<section>
+  <p>You *should* end up with 4 functions in your app:</p>
+  <ul>
+    <li>a function to store the input values in local storage</li>
+    <li>a function to clear the local storage completely</li>
+    <li>a function to populate the form from previously stored data</li>
+    <li>an init function, to trigger everything</li>
+  </ul>
+
+  <p>All your event handlers declared in your <code>init</code> function.</p>
+
+  <p>Quite a few variables declared at the top of the application.</p>
+</section>
+
+<section>
+<p>This is the beginning of my app:</p>
+<pre class="fragment javascript"><code>  var
+    form = document.getElementById("form"),
+    clearButton = document.getElementById("clear"),
+    restoreButton = document.getElementById("restore"),
+    nameInput = document.getElementById("input-name"),
+    lastNameInput = document.getElementById("input-last-name"),
+    emailInput = document.getElementById("input-email"),
+    commentInput = document.getElementById("input-comment"),
+    existingData = {},
+    storedData,
+    typeOfnode,
+    lsItemName,
+    lsItemValue,
+</code></pre>
+</section>
+
+<section>
+<p>My function to store items in local storage:</p>
+<pre class="fragment javascript"><code>storeFieldValue = function (event) {
+  typeOfnode = event.target.nodeName;
+  if(typeOfnode === "INPUT" || typeOfnode === "TEXTAREA") {
+    lsItemName = event.target.getAttribute("name");
+    lsItemValue = event.target.value;
+    window.localStorage.setItem(lsItemName, lsItemValue)
+  }
+}
+</code></pre>
+</section>
+
+
+<section>
+<p>My function to clear the local storage:</p>
+<pre class="fragment javascript"><code>clearStorage = function (event) {
+  event.preventDefault();
+  window.localStorage.clear();
+}
+</code></pre>
+</section>
+
+
+
+<section>
+<p>My function to retrieve local storage items and populate the form:</p>
+<pre class="fragment javascript"><code>populateExistingData = function () {
+
+  storedData = window.localStorage;
+  existingData = {
+    "name": storedData.getItem("userFirstName"),
+    "lastName": storedData.getItem("userLastname"),
+    "email": storedData.getItem("userEmail"),
+    "comment": storedData.getItem("userComment")
+  };
+
+  if(existingData.name !== null) {
+    nameInput.value = existingData.name;
+  }
+  if(existingData.lastName !== null) {
+    lastNameInput.value = existingData.lastName;
+  }
+  if(existingData.email !== null) {
+    emailInput.value = existingData.email;
+  }
+  if(existingData.comment !== null) {
+    commentInput.value = existingData.comment
+  }
+}
+</code></pre>
+</section>
+
+
+<section>
+<p>My <code>init</code> function:</p>
+<pre class="fragment javascript"><code>init = function () {
+  form.addEventListener("keyup", storeFieldValue);
+  restoreButton.addEventListener("click", populateExistingData);
+  clearButton.addEventListener("click", clearStorage);
+};
+</code></pre>
+</section>
+
+
+  </div>
+</div>
+
+    <script src="../assets/jquery-2.0.0.min.js"></script>
+    <script src="../assets/lib/js/head.min.js"></script>
+    <script src="../assets/js/reveal.min.js"></script>
+    <script src="../assets/js-course.js"></script>
+
+  </body>
+</html>
